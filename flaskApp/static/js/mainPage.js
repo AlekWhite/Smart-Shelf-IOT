@@ -1,23 +1,26 @@
-const origin = window.location.origin;
-
 function onLoad(){
-    console.log("loaded mainPage.js");
-    const inv = setInterval(getShelfData, 250);
+    getShelfData();
+
+    // setup socket
+    const socket = io.connect(window.location.origin);
+    socket.on('connect', () => {
+        console.log('Connected to server');
+    });
 
     // update page when server has new data
-    var socket = io();
-    socket.on('update', function(msg){
-        const data = msg.json();
+    socket.on('update', function(data){
         document.getElementById("s1Text").innerText = data.s1;
         document.getElementById("s2Text").innerText = data.s2;
         document.getElementById("s3Text").innerText = data.s3;
     });
+
+    console.log("loaded mainPage.js");
 }
 
 // pull all data from the server on request
 async function getShelfData() {
     try {
-        const res = await fetch(`${origin}/pulldata`);
+        const res = await fetch(`${window.location.origin}/pulldata`);
         if (!res.ok){
             throw new Error(`HTTP Error ${res.status}`);}
         const data = await res.json();
