@@ -51,7 +51,6 @@ def debug_https():
         request.environ['HTTP_X_FORWARDED_PROTO'] = 'https'
     print(f"Scheme after: {request.scheme}", flush=True)
 
-"""
 @app.route('/auth', methods=['POST'])
 def auth():
     data = request.get_json()
@@ -62,7 +61,6 @@ def auth():
         token = create_access_token(identity=str(user.id))
         return json.dumps({"token": token}), 200
     return json.dumps({"error": "Invalid credentials"}), 401
-"""
 
 # put new data into the db
 @app.route('/postdata', methods=['POST'])
