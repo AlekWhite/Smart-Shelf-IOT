@@ -2,7 +2,11 @@ function onLoad(){
     getShelfData();
 
     // setup socket
-    const socket = io.connect(window.location.origin);
+    const socket = io.connect(window.location.origin, {
+    secure: true,
+    rejectUnauthorized: false
+    });
+
     socket.on('connect', () => {
         console.log('Connected to server');
     });
