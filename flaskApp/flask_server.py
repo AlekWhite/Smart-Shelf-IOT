@@ -12,9 +12,6 @@ import time
 import json
 import os
 
-
-
-
 import data_builder
 from model import users, db
 
@@ -43,6 +40,7 @@ def main_page():
     print(session)
     return render_template("mainPage.html")
 
+"""
 @app.before_request
 def debug_https():
     print(f"Remote addr: {request.remote_addr}", flush=True)
@@ -52,12 +50,15 @@ def debug_https():
         request.environ['wsgi.url_scheme'] = 'https'
         request.environ['HTTP_X_FORWARDED_PROTO'] = 'https'
     print(f"Scheme after: {request.scheme}", flush=True)
+"""
 
 @app.route('/auth', methods=['POST'])
 def auth():
     data = request.get_json()
+    print(data, flush=True)
     user = users.query.filter_by(username=data.get('username')).first()
     if not user:
+        print("noUser Found", flush=True)
         return json.dumps({"error": "Invalid credentials BAD-USER"}), 401
     if check_password_hash(user.password_hash, data.get('password')):
         token = create_access_token(identity=str(user.id))
