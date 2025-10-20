@@ -41,6 +41,16 @@ def main_page():
     print(session)
     return render_template("mainPage.html")
 
+@app.before_request
+def debug_https():
+    print(f"Remote addr: {request.remote_addr}", flush=True)
+    print(f"Starts with 10.0: {request.remote_addr.startswith('10.0.')}", flush=True)
+    print(f"Scheme before: {request.scheme}", flush=True)
+    if request.remote_addr.startswith('10.0.'):
+        request.environ['wsgi.url_scheme'] = 'https'
+        request.environ['HTTP_X_FORWARDED_PROTO'] = 'https'
+    print(f"Scheme after: {request.scheme}", flush=True)
+
 """
 @app.route('/auth', methods=['POST'])
 def auth():
