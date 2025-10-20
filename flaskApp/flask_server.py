@@ -31,8 +31,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 db.init_app(app)
 jwt = JWTManager(app)
 socketio = SocketIO(app)
-with app.app_context():
-    db.create_all()
 
 # deliver main html page
 @app.route('/', methods=['GET'])
@@ -55,7 +53,6 @@ def debug_https():
 @app.route('/auth', methods=['POST'])
 def auth():
     data = request.get_json()
-    print(data, flush=True)
     user = users.query.filter_by(username=data.get('username')).first()
     if not user:
         print("noUser Found", flush=True)
