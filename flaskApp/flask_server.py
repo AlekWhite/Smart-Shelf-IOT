@@ -1,6 +1,7 @@
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import Flask, request, session, render_template, abort
+from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from flask import app as application
@@ -11,6 +12,9 @@ import time
 import json
 import os
 
+
+
+
 import data_builder
 from model import users, db
 
@@ -20,6 +24,7 @@ db_url = os.getenv("DATABASE_URL")
 
 # server setup
 app = Flask(__name__)
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1, x_port=1)
 app.static_folder = 'static'
 app.config['SECRET_KEY'] = secrets.token_urlsafe(32)
 app.config['JWT_SECRET_KEY'] = secrets.token_urlsafe(32)
