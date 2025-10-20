@@ -34,6 +34,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 db.init_app(app)
 jwt = JWTManager(app)
 socketio = SocketIO(app)
+with app.app_context():
+    db.create_all()
 
 # deliver main html page
 @app.route('/', methods=['GET'])
