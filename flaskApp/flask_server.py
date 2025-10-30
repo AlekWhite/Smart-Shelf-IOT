@@ -1,6 +1,6 @@
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask import Flask, request, session, render_template, abort
+from flask import Flask, request, session, render_template, abort, redirect, url_for
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
@@ -14,6 +14,7 @@ import os
 
 import data_builder
 from model import users, db
+from datetime import timedelta
 
 # pull info from .env
 load_dotenv()
@@ -28,6 +29,7 @@ app.config['JWT_SECRET_KEY'] = secrets.token_urlsafe(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = secrets.token_urlsafe(32)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) 
 db.init_app(app)
 jwt = JWTManager(app)
 socketio = SocketIO(app)
@@ -37,18 +39,6 @@ socketio = SocketIO(app)
 def main_page():
     print(session)
     return render_template("mainPage.html")
-
-"""
-@app.before_request
-def debug_https():
-    print(f"Remote addr: {request.remote_addr}", flush=True)
-    print(f"Starts with 10.0: {request.remote_addr.startswith('10.0.')}", flush=True)
-    print(f"Scheme before: {request.scheme}", flush=True)
-    if request.remote_addr.startswith('10.0.'):
-        request.environ['wsgi.url_scheme'] = 'https'
-        request.environ['HTTP_X_FORWARDED_PROTO'] = 'https'
-    print(f"Scheme after: {request.scheme}", flush=True)
-"""
 
 @app.route('/auth', methods=['POST'])
 def auth():
@@ -61,6 +51,33 @@ def auth():
         token = create_access_token(identity=str(user.id))
         return json.dumps({"token": token}), 200
     return json.dumps({"error": "Invalid credentials"}), 401
+
+@app.route('/auth_page', methods=['GET', 'POST'])
+def auth_page():
+    if request.method == 'GET':
+        return render_template("authPage.html")
+    print(request.form)
+    un = request.form.get("Username")
+    pw = request.form.get("Password")
+    user = users.query.filter_by(username=un).first()
+    if not user:
+        print("noUser Found", flush=True)
+        return json.dumps({"error": "Invalid credentials BAD-USER"}), 401
+    if check_password_hash(user.password_hash, pw):
+        session['user_id'] = user.id
+        return redirect(url_for("manager_page"))
+    return json.dumps({"error": "Invalid credentials"}), 401
+
+@app.route('/manager_page', methods=['GET'])
+def manager_page():
+    if 'user_id' not in session:
+        return redirect(url_for('auth_page'))
+    return render_template("managerPage.html")
+
+@app.route('/logout')
+def logout():
+    session.pop('user_id', None)
+    return redirect(url_for('auth_page'))
 
 # put new data into the db
 @app.route('/postdata', methods=['POST'])

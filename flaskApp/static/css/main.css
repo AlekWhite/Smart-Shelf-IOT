@@ -1,0 +1,31 @@
+
+body{
+    background-color: #e0e0ce;
+    color: #303840;
+    font-family: "Trebuchet MS";
+
+    .shelfDiv{
+        position: relative;
+        width: 50%;
+        margin: 30px 10px;
+        border: 2px solid #aebfae;
+        border-radius: 6px;
+        background-color: #b8c2bb;
+        box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .labelText{
+        position: relative;
+        padding: 5px;
+        color: #303840;
+        font-size: 24px;
+    }
+
+    .dataText{
+        position: relative;
+        padding: 10px 10px;
+        color: #303840;
+        font-size: 24px;
+    }
+}
+
