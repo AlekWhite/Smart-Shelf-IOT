@@ -18,8 +18,7 @@ CREATE TABLE IF NOT EXISTS item (
 -- shelf table
 CREATE TABLE IF NOT EXISTS shelf (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    calibration_factor FLOAT NOT NULL
+    name VARCHAR(255) NOT NULL
 );
 
 -- junction table for shelf-item 

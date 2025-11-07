@@ -4,6 +4,72 @@
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/managerPage.js') }}"></script>
 
-    <p class="labelText" style="font-size: 32px">Smart Shelf System Manager Settings:</p>
+    <div id="header" class="mainDiv">
+        <p class="labelText" style="font-size: 32px">Smart Shelf System Manager Settings:</p>
+        <form action="/">
+            <button class="lgButton" id="back" type="submit">
+            Home
+        </button></form>
+    </div>
+
+    <div class="shelfDiv" id="s1Div" >
+        <p><b class="labelText">Shelf Unit #1:</b></p>
+        <p id="s1Data" class="dataText">0</p>
+        <form action="/manager_page" method="post">
+            <input type="hidden" name="cal" value="1">
+            <button class="lgButton" id="calS1" type="submit">Calibrate</button>
+        </form>
+        <form action="/manager_page" method="post">
+            <p class="mainText">Add New Item:
+                <label>
+                    <select id="newItemsS1" name="newItem"></select>
+                    <input type="hidden" name="newItemShelf" value="1">
+                </label>
+            </p>
+        </form>
+        <div id="itemsS1" class="itemsDiv">
+            <span class="labelText">Allowed Items:</span>
+        </div>
+    </div>
+
+    <div class="shelfDiv" id="s2Div" >
+        <p><b class="labelText">Shelf Unit #2:</b></p>
+        <p id="s2Data" class="dataText">0</p>
+        <form action="/manager_page" method="post">
+            <input type="hidden" name="cal" value="2">
+            <button class="lgButton" id="calS2" type="submit">Calibrate</button>
+        </form>
+        <form action="/manager_page">
+            <p class="mainText">Add New Item:
+                <label>
+                    <select id="newItemsS2" name="newItem"></select>
+                    <input type="submit" value="2">
+                </label>
+            </p>
+        </form>
+        <div id="itemsS2" class="itemsDiv">
+            <span class="labelText">Allowed Items:</span>
+        </div>
+    </div>
+
+    <div class="shelfDiv" id="s3Div" >
+        <p><b class="labelText">Shelf Unit #3:</b></p>
+        <p id="s3Data" class="dataText">0</p>
+        <form action="/manager_page" method="post">
+            <input type="hidden" name="cal" value="3">
+            <button class="lgButton" id="calS3" type="submit">Calibrate</button>
+        </form>
+        <form action="/manager_page">
+            <p class="mainText">Add New Item:
+                <label>
+                    <select id="newItemsS3" name="newItem"></select>
+                    <input type="submit" value="3">
+                </label>
+            </p>
+        </form>
+        <div id="itemsS3" class="itemsDiv">
+            <span class="labelText">Allowed Items:</span>
+        </div>
+    </div>
 
 </body>

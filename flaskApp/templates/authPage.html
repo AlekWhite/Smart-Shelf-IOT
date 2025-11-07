@@ -3,14 +3,24 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/authPage.js') }}"></script>
-    <p class="labelText" style="font-size: 32px">Manager Login:</p>
-    <form action = "/auth_page" method = "POST">
-        <p class="labelText">Username
-            <label> <input type = "text" name = "Username" required /></label>
-        </p>
-        <p class="labelText">Password
-            <label> <input type = "password" name = "Password" required /></label>
-        </p>
-        <input class="buttonSty"  type = "submit" value = "Submit" />
-    </form>
+    <div class="mainDiv">
+
+        <p><b class="labelText" style="font-size: 32px">Manager Login:</b></p>
+
+        <form action = "/auth_page" method = "POST">
+            <p class="mainText">Username:
+                <label><input class="textInp" type = "text" name = "Username" required /></label>
+            </p>
+            <p class="mainText">Password:
+                <label> <input class="textInp" type = "password" name = "Password" required /></label>
+            </p>
+            <input class="lgButton"  type = "submit" value = "Submit" />
+        </form>
+
+        <form action="/">
+            <button class="lgButton" id="back" type="submit">
+            Back
+        </button></form>
+
+    </div>
 </body>

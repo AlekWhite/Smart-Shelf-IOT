@@ -19,7 +19,6 @@ token = None
 # arduino info
 ard_info = {"port": "COM3", "baud": 57600}
 
-
 # get a valid jwt for the server given a valid username and password
 def login():
     global token
@@ -53,6 +52,12 @@ def post_data(data):
             login()
             post_data(data)
         response.raise_for_status()
+
+        # get calVal from res
+        res = response.json()
+        calVal = res.get("cal", 0)
+        return calVal
+
     except requests.exceptions.RequestException as e:
         print(f"An error occurred: {e}")
 
@@ -60,7 +65,6 @@ def post_data(data):
 def loop():
     ard = ard_connect()
     login()
-    oldVals = [0, 0, 0, 0]
     while True:
         # attempt reconnect to serial
         if ard is None:
@@ -68,26 +72,29 @@ def loop():
             ard = ard_connect()
             continue
 
-        # reads the Serial until relevant data is found
         try:
             line = str(ard.readline())
             if line != "b''":
 
+                # read the Serial for data
                 values = [float(exp.group()) for exp in re.finditer(r"[-.0-9]+", str(line))]
-                for i in range(1, len(values)):
-                    if abs(oldVals[i] - values[i]) >= 4:
-                        oldVals = values.copy()
-                        data = {
-                            's1': str(oldVals[1]),
-                            's2': str(oldVals[2]),
-                            's3': str(oldVals[3])}
-                        print(data)
-                        post_data(data)
+                data = {
+                    's1': str(values[1]),
+                    's2': str(values[2]),
+                    's3': str(values[3])}
+                print(data)
+
+                # send data to sever
+                cal = post_data(data)
+
+                # send cal command when needed
+                if cal != 0:
+                    ard.write(str(cal))
                         break
         except:
             print("Failed to read Arduino data")
             continue
-        time.sleep(0.01)
+        time.sleep(0.05)
 
 thread = Thread(target=loop)
 thread.start()

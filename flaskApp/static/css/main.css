@@ -1,31 +1,86 @@
 
 body{
-    background-color: #e0e0ce;
+    background-image: url("img/bg.png");
+    background-repeat: repeat-y;
     color: #303840;
     font-family: "Trebuchet MS";
 
     .shelfDiv{
         position: relative;
-        width: 50%;
+        width: 800px;
         margin: 30px 10px;
-        border: 2px solid #aebfae;
+        border: 3px solid #81848b;
         border-radius: 6px;
-        background-color: #b8c2bb;
+        background-color: #8a8e96;
         box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .mainDiv{
+        position: relative;
+        width: 99%;
+        margin: 15px 3px;
+        border: 5px solid #8a9696;
+        border-radius: 6px;
+        background-color: #788282;
+        box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .itemsDiv{
+        position: relative;
+        width: 90%;
+        margin: 15px 3px;
+        border: 3px solid #6f7b85;
+        border-radius: 6px;
+        background-color: #6f7b85;
+        box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
     .labelText{
         position: relative;
         padding: 5px;
-        color: #303840;
+        color: #3f474f;
+        font-size: 24px;
+    }
+
+    .mainText{
+        position: relative;
+        padding: 5px;
+        color: #cdcfd4;
         font-size: 24px;
     }
 
     .dataText{
         position: relative;
-        padding: 10px 10px;
+        padding: 10px;
         color: #303840;
         font-size: 24px;
+    }
+
+    .lgButton{
+        position: relative;
+        color: #3f474f;
+        float: right;
+        border: 2px solid #8ea3bd;
+        border-radius: 3px;
+        background-color: #9facbd;
+        margin: 5px 10px;
+        padding: 4px;
+        cursor: pointer;
+        z-index: 1000;
+    }
+
+    .textInp{
+        position: relative;
+        font-family: "Trebuchet MS";
+        font-size: 16px;
+        color: #303840;
+        background-color: #c3ccd4;
+        padding: 4px;
+        border: 2px solid #8d8e91;
+        border-radius: 5px;
     }
 }
 

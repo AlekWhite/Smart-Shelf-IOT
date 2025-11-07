@@ -4,22 +4,33 @@
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/mainPage.js') }}"></script>
 
-    <p class="labelText" style="font-size: 32px">Smart Shelf System Interface:</p>
+    <div class="mainDiv">
+        <p><b class="labelText" style="font-size: 48px">Smart Shelf System Interface:</b></p>
+        <form action="/auth_page">
+            <button class="lgButton" id="lgButton" type="submit">
+            Manager Login
+        </button></form>
+    </div>
 
     <div class="shelfDiv" id="s1Div" >
         <p><b class="labelText">Shelf Unit #1:</b></p>
-        <p id="s1Text" class="dataText"></p>
+        <div id="itemsS1" class="itemsDiv">
+            <span class="labelText">Allowed Items:</span>
+        </div>
     </div>
 
     <div class="shelfDiv" id="s2Div" >
         <p><b class="labelText">Shelf Unit #2:</b></p>
-        <p id="s2Text" class="dataText"></p>
+        <div id="itemsS2" class="itemsDiv">
+            <span class="labelText">Allowed Items:</span>
+        </div>
     </div>
 
     <div class="shelfDiv" id="s3Div" >
         <p><b class="labelText">Shelf Unit #3:</b></p>
-        <p id="s3Text" class="dataText"></p>
+        <div id="itemsS3" class="itemsDiv">
+            <span class="labelText">Allowed Items:</span>
+        </div>
     </div>
-
 
 </body>

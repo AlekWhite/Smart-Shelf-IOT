@@ -29,10 +29,12 @@ app.config['JWT_SECRET_KEY'] = secrets.token_urlsafe(32)
 app.config['SQLALCHEMY_DATABASE_URI'] = secrets.token_urlsafe(32)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30) 
+app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 db.init_app(app)
 jwt = JWTManager(app)
 socketio = SocketIO(app)
+
+calVal = 0
 
 # deliver main html page
 @app.route('/', methods=['GET'])
@@ -68,10 +70,18 @@ def auth_page():
         return redirect(url_for("manager_page"))
     return json.dumps({"error": "Invalid credentials"}), 401
 
-@app.route('/manager_page', methods=['GET'])
+@app.route('/manager_page', methods=['GET', 'POST'])
 def manager_page():
     if 'user_id' not in session:
         return redirect(url_for('auth_page'))
+
+    # pull calVal from form
+    cal = request.form.get("cal")
+    if cal:
+        global calVal
+        calVal = cal
+        print(cal)
+
     return render_template("managerPage.html")
 
 @app.route('/logout')
@@ -83,11 +93,19 @@ def logout():
 @app.route('/postdata', methods=['POST'])
 @jwt_required()
 def update_dataset():
+    global calVal
+
     # put data from request.get_json() in to the db
     data = request.get_json()
     data_builder.displayData = data
     print(get_jwt_identity(), flush=True)
-    return json.dumps({"status": "success"}), 200
+
+    # send cal request in response
+    calOut = calVal
+    if calVal != 0:
+        calVal = 0
+
+    return json.dumps({"status": "success", "cal": calOut}), 200
 
 # send display data on request
 @app.route('/pulldata', methods=['GET'])
@@ -98,7 +116,7 @@ def pull_data():
 @socketio.on('connect')
 def connect():
     print('Client connected')
-
+    
 # polls the data_builder, updates clients when display data is new
 def push_data_thread():
     while True:
