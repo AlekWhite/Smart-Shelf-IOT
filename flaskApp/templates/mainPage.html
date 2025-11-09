@@ -1,35 +1,40 @@
 <!DOCTYPE html>
+<title>Smart Shelf System</title>
 <body>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/item.css') }}" />
     <script src="https://cdn.socket.io/4.5.0/socket.io.min.js"></script>
     <script src="{{ url_for('static', filename='js/mainPage.js') }}"></script>
 
     <div class="mainDiv">
-        <p><b class="labelText" style="font-size: 48px">Smart Shelf System Interface:</b></p>
+        <p><b class="mainText" style="font-size: 48px">Smart Shelf System Interface:</b></p>
         <form action="/auth_page">
-            <button class="lgButton" id="lgButton" type="submit">
+            <button class="adButton" id="lgButton" type="submit">
             Manager Login
         </button></form>
     </div>
 
     <div class="shelfDiv" id="s1Div" >
         <p><b class="labelText">Shelf Unit #1:</b></p>
-        <div id="itemsS1" class="itemsDiv">
-            <span class="labelText">Allowed Items:</span>
+        <div id="items_s1" class="itemsDiv">
+            <span class="mainText">Items:</span>
+            <p id="s1Data" class="dataText">No-Data</p>
         </div>
     </div>
 
     <div class="shelfDiv" id="s2Div" >
         <p><b class="labelText">Shelf Unit #2:</b></p>
-        <div id="itemsS2" class="itemsDiv">
-            <span class="labelText">Allowed Items:</span>
+        <div id="items_s2" class="itemsDiv">
+            <span class="mainText">Items:</span>
+            <p id="s2Data" class="dataText">No-Data</p>
         </div>
     </div>
 
     <div class="shelfDiv" id="s3Div" >
         <p><b class="labelText">Shelf Unit #3:</b></p>
-        <div id="itemsS3" class="itemsDiv">
-            <span class="labelText">Allowed Items:</span>
+        <div id="items_s3" class="itemsDiv">
+            <span class="mainText">Items:</span>
+            <p id="s3Data" class="dataText">No-Data</p>
         </div>
     </div>
 

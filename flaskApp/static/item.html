@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<div class="item-card">
+    <b><p class="name" style="font-size: 24px;"></p></b>
+    <img class="image" src="" alt="css/img/image-fail.svg" />
+    <b><p class="count"></p></b>
+
+    <div class="manager_html" style="display:none;">
+        <form action = "/manager_page" method = "POST">
+            <p class="labelText" style="font-size: 16px;">Set Restock-Count:
+                <label> <input class="textInpR" type = "number" name = "restock_count" required /></label>
+                <input class="itemCaller" type="hidden" name="itemUpdate" value="-1">
+                <input class="shelfCaller" type="hidden" name="shelfUpdate" value="-1">
+                <input class="lgButton" style="float: none;" type = "submit" value = "Submit" />
+            </p>  
+        </form>
+
+        <form action = "/manager_page" method = "POST">
+            <p class="labelText" style="font-size: 16px;">Reset Current Count:
+                <label><input class="textInpC" type = "number" name = "count" required /></label>
+                <input class="itemCaller" type="hidden" name="itemUpdate" value="-1">
+                <input class="shelfCaller" type="hidden" name="shelfUpdate" value="-1">
+                <input class="lgButton" style="float: none;"  type = "submit" value = "Submit" />
+            </p>
+        </form>
+
+        <form action = "/manager_page" method = "POST">
+            <p class="labelText" style="font-size: 16px;">Remove from allowed items:
+                <input class="itemCaller" type="hidden" name="itemUpdate" value="-1">
+                <input class="shelfCaller" type="hidden" name="shelfUpdate" value="-1">
+                <input type="hidden" name="remove" value="remove">
+                <button class="adButton" style="float: none;"  type="submit" >Remove</button>
+            </p>
+        </form>
+    </div>
+
+    <p class="restock"></p>
+</div>

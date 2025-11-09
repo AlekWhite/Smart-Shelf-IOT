@@ -22,7 +22,7 @@ ard_info = {"port": "COM3", "baud": 57600}
 # get a valid jwt for the server given a valid username and password
 def login():
     global token
-    login_url = f"{base_url}/auth"
+    login_url = f"{base_url}/api/auth"
     try:
         response = requests.post(login_url, json=login_data)
         response.raise_for_status()
@@ -41,7 +41,7 @@ def ard_connect():
 
 # upload new data to the server with a post request
 def post_data(data):
-    post_url = f"{base_url}/postdata"
+    post_url = f"{base_url}/api/postdata"
     headers = {
         "Authorization": f"Bearer {token}",
         "Content-Type": "application/json"}
@@ -65,6 +65,9 @@ def post_data(data):
 def loop():
     ard = ard_connect()
     login()
+    oldVals = [0, 0, 0, 0]
+    t = time.time()
+
     while True:
         # attempt reconnect to serial
         if ard is None:
@@ -72,43 +75,31 @@ def loop():
             ard = ard_connect()
             continue
 
+        # reads the Serial until relevant data is found
         try:
             line = str(ard.readline())
             if line != "b''":
 
-                # read the Serial for data
                 values = [float(exp.group()) for exp in re.finditer(r"[-.0-9]+", str(line))]
-                data = {
-                    's1': str(values[1]),
-                    's2': str(values[2]),
-                    's3': str(values[3])}
-                print(data)
+                for i in range(1, len(values)):
+                    if (abs(oldVals[i] - values[i]) >= 4) or (time.time() - t >= 1):
+                        t = time.time()
+                        
+                        oldVals = values.copy()
+                        data = {
+                            's1': str(oldVals[1]),
+                            's2': str(oldVals[2]),
+                            's3': str(oldVals[3])}
+                        print(data)
 
-                # send data to sever
-                cal = post_data(data)
-
-                # send cal command when needed
-                if cal != 0:
-                    ard.write(str(cal))
+                        cal = post_data(data)
+                        if cal != 0:
+                            ard.write(str(cal).encode('utf-8'))
                         break
         except:
             print("Failed to read Arduino data")
             continue
-        time.sleep(0.05)
+        time.sleep(0.01)
 
 thread = Thread(target=loop)
 thread.start()
-
-""" 
-Use this code to get hashed passwords, then enter them into the db
-from werkzeug.security import check_password_hash, generate_password_hash
-hashed_pw = generate_password_hash("AW")
-print(hashed_pw)
-print(check_password_hash(hashed_pw, "AW"))
-"""
-
-"""
-docker exec -it postgres_db psql -U AW -d mydb
-INSERT INTO users (username, password_hash)
-VALUES ('UN', 'hash');
-"""

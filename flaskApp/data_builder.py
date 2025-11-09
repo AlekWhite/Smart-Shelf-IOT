@@ -1,17 +1,13 @@
-displayData = {"s1": "1", "s2": "2", "s3": "10"}
+
+displayData = {"s1": [{"name": "item1", "count": 5}],
+
+               "s2": [{"name": "item4", "count": 2},
+                      {"name": "item3", "count": 6}],
+                      
+               "s3": [{"name": "item6", "count": 5}]}
+
 newData = True
 
 def update_display_data():
     global displayData, newData
-    """
-    newDisplayData = {"s1": str(int(displayData.get("s1"))+5),
-                      "s2": str(int(displayData.get("s2"))+5),
-                      "s3": str(int(displayData.get("s3"))+5)}
-
-    if newDisplayData != displayData:
-        displayData = newDisplayData.copy()
-        newData = True
-    else:
-        newData = False
-    """
     pass

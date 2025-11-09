@@ -9,7 +9,7 @@ body{
         position: relative;
         width: 800px;
         margin: 30px 10px;
-        border: 3px solid #81848b;
+        border: 5px dashed #81848b;
         border-radius: 6px;
         background-color: #8a8e96;
         box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
@@ -27,6 +27,17 @@ body{
         overflow: hidden;
     }
 
+    .lgDiv{
+        position: relative;
+        width: 350px;
+        margin: 15px 3px;
+        border: 5px solid #8a9696;
+        border-radius: 6px;
+        background-color: #788282;
+        box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
     .itemsDiv{
         position: relative;
         width: 90%;
@@ -36,6 +47,12 @@ body{
         background-color: #6f7b85;
         box-shadow: 0 12px 16px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+
+        display: flex;          
+        flex-wrap: wrap;       
+        justify-content: flex-start; 
+        gap: 10px;         
+        padding: 10px;
     }
 
     .labelText{
@@ -43,26 +60,38 @@ body{
         padding: 5px;
         color: #3f474f;
         font-size: 24px;
+        margin: 5px 5px;
+        border: 3px dashed #8a9696;
+        border-radius: 3px;
+        background-color: #788282;  
     }
 
-    .mainText{
+    .lgText{
         position: relative;
         padding: 5px;
         color: #cdcfd4;
         font-size: 24px;
     }
 
+    .mainText{
+        position: relative;
+        padding: 5px;
+        color: #3f474f;
+        font-size: 24px;
+    }
+
     .dataText{
         position: relative;
-        padding: 10px;
-        color: #303840;
-        font-size: 24px;
+        left: 20px;
+        padding: 2px;
+        color: #1b1f24;
+        font-size: 18px;
     }
 
     .lgButton{
         position: relative;
+        float: left;
         color: #3f474f;
-        float: right;
         border: 2px solid #8ea3bd;
         border-radius: 3px;
         background-color: #9facbd;
@@ -70,6 +99,36 @@ body{
         padding: 4px;
         cursor: pointer;
         z-index: 1000;
+        font-family: "Trebuchet MS";
+    }
+
+    .mgButton{
+        position: relative;
+        float: right;
+        bottom: 50px;
+        color: #3f474f;
+        border: 2px solid #8ea3bd;
+        border-radius: 3px;
+        background-color: #9facbd;
+        margin: 5px 10px;
+        padding: 4px;
+        cursor: pointer;
+        z-index: 1000;
+        font-family: "Trebuchet MS";
+    }
+
+    .adButton{
+        position: relative;
+        float: right;
+        color: #3f474f;
+        border: 2px solid #8ea3bd;
+        border-radius: 3px;
+        background-color: #9facbd;
+        margin: 5px 10px;
+        padding: 4px;
+        cursor: pointer;
+        z-index: 1000;
+        font-family: "Trebuchet MS";
     }
 
     .textInp{
