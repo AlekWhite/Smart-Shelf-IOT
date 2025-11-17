@@ -37,8 +37,8 @@ async function setAllItems() {
 
                     // display & setup manager options
                     item.querySelector(".manager_html").style.display = "block";
-                    item.querySelector(".textInpR").innerText = i.restock_count;
-                    item.querySelector(".textInpC").innerText = i.count;
+                    item.querySelector(".textInpR").value = i.restock_count;
+                    item.querySelector(".textInpC").value = i.count;
                     item.querySelectorAll(".shelfCaller").forEach(el => { el.value = s.name; });
                     item.querySelectorAll(".itemCaller").forEach(el => { el.value = i.name; });
 
