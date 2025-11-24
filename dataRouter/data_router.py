@@ -92,6 +92,7 @@ def loop():
                             's3': str(oldVals[3])}
                         print(data)
 
+                        # send the data to the server
                         cal = post_data(data)
                         if cal != 0:
                             ard.write(str(cal).encode('utf-8'))

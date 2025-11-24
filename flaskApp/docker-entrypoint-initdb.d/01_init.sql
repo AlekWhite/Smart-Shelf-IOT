@@ -38,6 +38,22 @@ CREATE TABLE IF NOT EXISTS live_data (
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- function to delete old live_data records
+CREATE OR REPLACE FUNCTION delete_old_live_data()
+RETURNS trigger AS $$
+BEGIN
+    DELETE FROM live_data WHERE timestamp < NOW() - INTERVAL '10 seconds';
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- trigger delete after each insert
+CREATE TRIGGER trigger_delete_old_live_data
+    AFTER INSERT ON live_data
+    FOR EACH STATEMENT
+    EXECUTE FUNCTION delete_old_live_data();
+
+
 CREATE INDEX idx_item_name ON item(name);
 CREATE INDEX idx_live_data_timestamp ON live_data(timestamp);
 CREATE INDEX idx_shelf_item_shelf ON shelf_item(shelf_id);

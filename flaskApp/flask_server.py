@@ -14,7 +14,7 @@ import time
 import json
 import os
 
-import data_builder
+from data_builder import DataBuilder
 from model import User, Item, Shelf, ShelfItem, LiveData, db 
 
 # pull info from .env
@@ -35,6 +35,7 @@ db.init_app(app)
 jwt = JWTManager(app)
 socketio = SocketIO(app)
 calVal = 0
+data_b = DataBuilder(app, db, socketio)
 
 # deliver main html page
 @app.route('/', methods=['GET'])
@@ -179,10 +180,16 @@ def get_shelves():
 def update_dataset():
     global calVal
 
-    # put data from request.get_json() in to the db
+    # put data into the db
     data = request.get_json()
-    data_builder.displayData = data
-    print(get_jwt_identity(), flush=True)
+    try:
+        new_live_data = LiveData(data=data)
+        db.session.add(new_live_data)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error saving live data: {e}", flush=True)
+        return json.dumps({"status": "error", "message": str(e)}), 500
 
     # send cal request in response
     calOut = calVal
@@ -200,13 +207,13 @@ def connect():
 def push_data_thread():
     t = time.time()
     while True:  # updates at least every 5sec, at most, every 1sec
-        data_builder.update_display_data()
-        if data_builder.newData or (time.time() - t >= 5):
-            socketio.emit("update", data_builder.displayData)
-            data_builder.newData = False
+        if data_b.newData or (time.time() - t >= 5):
+            socketio.emit("update")
+            data_b.newData = False
             t = time.time()
         time.sleep(1)
 
 # start loop in new thread
 poll_loop = Thread(target=push_data_thread)
 poll_loop.start()
+data_b.start()
