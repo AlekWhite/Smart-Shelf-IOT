@@ -50,7 +50,7 @@ class DataBuilder(threading.Thread):
                      if s.name == key:
                             for si in s.shelf_items:
                                    if si.allowed:
-                                          k_values.append([int(si.item.per_unit_weight / DataBuilder.MASS_FACTOR), si.item.name])
+                                          k_values.append([int(si.item.per_unit_weight / (DataBuilder.MASS_FACTOR*10)), si.item.name])
 
               # get the stable sensor value 
               n = abs(int(val / (DataBuilder.MASS_FACTOR*10)))             
