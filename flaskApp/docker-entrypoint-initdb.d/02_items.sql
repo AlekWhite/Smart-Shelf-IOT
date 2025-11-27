@@ -1,8 +1,9 @@
 
 INSERT INTO item (name, per_unit_weight, image_link) VALUES
-('10g test mass', 1000, 'https://awsite.site/static/css/img/kilo.svg'),
-('Pens', 100, 'https://awsite.site/static/css/img/pen.svg'),
-('Binder Clips', 75, 'https://awsite.site/static/css/img/binder-clip.svg');
+('Test Mass', 6000, 'https://awsite.site/static/css/img/kilo.svg'),
+('Pens', 7000, 'https://awsite.site/static/css/img/pen.svg'),
+('Cards', 15000, 'https://awsite.site/static/css/img/cards.svg'),
+('Binder Clips', 11000, 'https://awsite.site/static/css/img/binder-clip.svg');
 
 
 INSERT INTO shelf (name)
@@ -12,8 +13,10 @@ VALUES
 ('s3');
 
 INSERT INTO shelf_item (shelf_id, item_name, count, restock_count, allowed)
-SELECT s.id, '10g test mass', 0, 3, TRUE FROM shelf s WHERE s.name IN ('s1', 's2', 's3')
+SELECT s.id, 'Test Mass', 0, 1, TRUE FROM shelf s WHERE s.name IN ('s1', 's2', 's3')
 UNION ALL
-SELECT s.id, 'Pens', 0, 3, FALSE FROM shelf s WHERE s.name IN ('s1', 's2', 's3')
+SELECT s.id, 'Cards', 0, 2, TRUE FROM shelf s WHERE s.name IN ('s1', 's2', 's3')
 UNION ALL
-SELECT s.id, 'Binder Clips', 0, 3, FALSE FROM shelf s WHERE s.name IN ('s1', 's2', 's3');
+SELECT s.id, 'Pens', 0, 3, TRUE FROM shelf s WHERE s.name IN ('s1', 's2', 's3')
+UNION ALL
+SELECT s.id, 'Binder Clips', 0, 1, TRUE FROM shelf s WHERE s.name IN ('s1', 's2', 's3');

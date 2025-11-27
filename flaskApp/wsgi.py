@@ -1,5 +1,9 @@
 import flask_server
-from flask_server import socketio, app
+from flask_server import app
+from data_builder import DataBuilder
 
 if __name__ == "__main__":
-    socketio.run(app, host="0.0.0.0", port="5100", allow_unsafe_werkzeug=True, debug=False)
+    data_b = DataBuilder(app)
+    data_b.start()
+    app.run(host="0.0.0.0", port="5100", debug=False)
+    

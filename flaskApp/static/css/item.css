@@ -29,6 +29,13 @@
         font-size: 18px;
     }
 
+    .restock{
+        border: 3px dashed #8a9696;
+        border-radius: 3px;
+        padding: 5px;
+        background-color: #8a9696;
+    }
+
     .textInpR, .textInpC, .textInp{
         position: relative;
         font-family: "Trebuchet MS";

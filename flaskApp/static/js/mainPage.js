@@ -10,22 +10,24 @@ async function loadItemTemplate() {
 
 async function onLoad(){
 
-    // setup socket
-    const socket = io.connect(window.location.origin, {
-        secure: true,
-        rejectUnauthorized: false
-    });
-    socket.on('connect', () => {
-        console.log('socket connected to server');
-    });
-
-    // display new stock info when the server has an update
-    socket.on('update', setAllItems);
+    // get data every 1sec
+    async function loop() {
+        try { await setAllItems();
+        } catch (err) {
+            console.error("Error updating data:", err); }
+        setTimeout(loop, 1000); // run again in 1 second
+    }
 
     // load stock
     await setAllItems();
- 
+    loop();
+
 }
+
+const status_map = {"HEALTHY": {"text": "Healthy", "color": "#6fa86bff"},
+                            "UNSTABLE": {"text": "Unstable", "color": "#b29d4aff"},
+                            "OFFLINE": {"text": "Offline", "color": "#6591aeff"},
+                            "ANOMALY": {"text": "Anomaly", "color": "#8b7196ff"}} 
 
 // pull item data, display items on each shelf 
 async function setAllItems() {
@@ -56,10 +58,11 @@ async function setAllItems() {
                     item.querySelector(".image").src = i.image_link;
 
                     // display low stock
-                    var stockLevel = "Low Stock"
-                    if (i.count == 0){stockLevel = "Out of Stock";}
-                    if (i.count >= i.restock_count){stockLevel = "In Stock";}
-                    item.querySelector(".restock").innerText = stockLevel;
+                    var stockLevel = {"text": "Low Stock", "color": "#a3a86bff"};
+                    if (i.count == 0){stockLevel = {"text": "Out of Stock", "color":"#a8796bff"};}
+                    if (i.count >= i.restock_count){stockLevel = {"text": "In Stock", "color": "#5d8f59ff"};}
+                    item.querySelector(".restock").innerText = stockLevel["text"];
+                    item.querySelector(".restock").style.backgroundColor = stockLevel["color"];
 
                     // display un-allowed item alert 
                     if (!i.allowed) {
@@ -70,6 +73,14 @@ async function setAllItems() {
                     document.getElementById("items_" + s.name).appendChild(item);
                 }
             })
+
+            // update shelf status
+            const stat = status_map[s.status];
+            if (stat){
+                document.getElementById("status_text_" + s.name).style.backgroundColor = stat.color;
+                document.getElementById("status_text_" + s.name).innerText = "Status: " + stat.text;
+            }
+
         });
     } catch (err) {
         console.error("Error loading items:", err);

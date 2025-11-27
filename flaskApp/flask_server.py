@@ -2,7 +2,6 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask import Flask, request, session, render_template, abort, redirect, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
-from flask_socketio import SocketIO, emit
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import select, update
 from flask import app as application
@@ -14,7 +13,6 @@ import time
 import json
 import os
 
-from data_builder import DataBuilder
 from model import User, Item, Shelf, ShelfItem, LiveData, db 
 
 # pull info from .env
@@ -33,9 +31,8 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
 db.init_app(app)
 jwt = JWTManager(app)
-socketio = SocketIO(app)
 calVal = 0
-data_b = DataBuilder(app, db, socketio)
+
 
 # deliver main html page
 @app.route('/', methods=['GET'])
@@ -157,6 +154,7 @@ def get_shelves():
         shelf_obj = {
             "id": s.id,
             "name": s.name,
+            "status": s.status,
             "items": []}
 
         for si in s.shelf_items:
@@ -197,23 +195,3 @@ def update_dataset():
         calVal = 0
 
     return json.dumps({"status": "success", "cal": calOut}), 200
-
-# socket connection
-@socketio.on('connect')
-def connect():
-    print('Client connected')
-    
-# polls the data_builder, updates clients when display data is new
-def push_data_thread():
-    t = time.time()
-    while True:  # updates at least every 5sec, at most, every 1sec
-        if data_b.newData or (time.time() - t >= 5):
-            socketio.emit("update")
-            data_b.newData = False
-            t = time.time()
-        time.sleep(1)
-
-# start loop in new thread
-poll_loop = Thread(target=push_data_thread)
-poll_loop.start()
-data_b.start()

@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS item (
 -- shelf table
 CREATE TABLE IF NOT EXISTS shelf (
     id SERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(20) CHECK (status IN ('HEALTHY', 'UNSTABLE', 'OFFLINE', 'ANOMALY')) DEFAULT 'OFFLINE' NOT NULL
 );
 
 -- junction table for shelf-item 
@@ -49,7 +50,7 @@ $$ LANGUAGE plpgsql;
 
 -- trigger delete after each insert
 CREATE TRIGGER trigger_delete_old_live_data
-    AFTER INSERT ON live_data
+    BEFORE INSERT ON live_data
     FOR EACH STATEMENT
     EXECUTE FUNCTION delete_old_live_data();
 
