@@ -2,3 +2,4 @@ pen.svg: https://staging.svgrepo.com/svg/67738/pen
 kilo.svg: https://www.svgrepo.com/svg/18594/kilo
 image-fail.svg: https://www.svgrepo.com/svg/532577/image-square-xmark
 binder-clip.svg: https://thenounproject.com/icon/binder-clip-966870/
+cards.svg: https://www.svgrepo.com/svg/121851/playing-cards
