@@ -1,9 +1,9 @@
 
 INSERT INTO item (name, per_unit_weight, image_link) VALUES
-('Test Mass', 6000, 'https://awsite.site/static/css/img/kilo.svg'),
-('Pens', 7000, 'https://awsite.site/static/css/img/pen.svg'),
-('Cards', 15000, 'https://awsite.site/static/css/img/cards.svg'),
-('Binder Clips', 11000, 'https://awsite.site/static/css/img/binder-clip.svg');
+('Test Mass', 5200, 'https://awsite.site/static/css/img/kilo.svg'),
+('Pens', 7400, 'https://awsite.site/static/css/img/pen.svg'),
+('Cards', 13600, 'https://awsite.site/static/css/img/cards.svg'),
+('Binder Clips', 11400, 'https://awsite.site/static/css/img/binder-clip.svg');
 
 
 INSERT INTO shelf (name)

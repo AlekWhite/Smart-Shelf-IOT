@@ -23,6 +23,7 @@ class DataBuilder(threading.Thread):
               self.app = app
               self.running_vals = {}
               self.running_states = {}
+              self.weight_key = {}
     
               with self.app.app_context():
 
@@ -38,50 +39,22 @@ class DataBuilder(threading.Thread):
                             em = 0
                             for si in s.shelf_items:
                                    em += si.count * si.item.per_unit_weight
+                                   self.weight_key[si.item.name] = si.item.per_unit_weight
                             self.running_vals[s.name] = [em, 0, em]
                             self.running_states[s.name] = Status(s.status) 
 
        # check if sensor vals match allowed vals
-       def anomaly_check(self, key, val):
-              
-              # get allowed mass values 
-              k_values = []
+       def anomaly_check(self, key):
+              exp_mas = 0
+              count = 1
               for s in Shelf.query.all():
                      if s.name == key:
                             for si in s.shelf_items:
-                                   if si.allowed:
-                                          k_values.append([int(si.item.per_unit_weight / (DataBuilder.MASS_FACTOR*10)), si.item.name])
+                                   count += si.count
+                                   exp_mas += si.item.per_unit_weight * si.count
+              print(f"AC: rv:{self.running_vals[key][0]} em:{exp_mas} tol:{count}")
+              return int(self.running_vals[key][0]) in range (int(exp_mas-(count*DataBuilder.MASS_FACTOR)), int(exp_mas+(count*DataBuilder.MASS_FACTOR)))
 
-              # get the stable sensor value 
-              n = abs(int(val / (DataBuilder.MASS_FACTOR*10)))             
-              if n == 0:
-                     return [None]
-              print(f"AC: rv:{n} factors:{k_values}")
-                                 
-              # if n factors into the allowed masses it passes 
-              dp = [None] * (n + 1)
-              dp[0] = {}
-              for i in range(1, n + 1):
-                     for val in k_values:
-                            k = val[0]
-                            if i >= k and dp[i - k] is not None:
-                                   new_cofs = dp[i - k].copy()
-                                   new_cofs[k] = new_cofs.get(k, 0) + 1
-                                   dp[i] = new_cofs
-                                   break
-
-              # record the items and counts
-              if dp[n] is None:
-                     return False
-              new_items = []
-              for v in k_values:
-                     val = 0
-                     for k in dp[n]:
-                            if k == v[0]:
-                                   val = dp[n][k]
-                     new_items.append((val, v[1]))
-              return new_items
-              
                                       
        # update the db when the items on a shelf change 
        def handle_val_event(self, key, delta):
@@ -89,39 +62,33 @@ class DataBuilder(threading.Thread):
                      return
               print(f"DELT: on:{key} rv:{self.running_vals[key][0]} delt:{delta}")
 
-              # when sensor val is zero, set all item counts to zero
-              if int(self.running_vals[key][0] / (DataBuilder.MASS_FACTOR*10)) == 0:
-                     new_items = []
-                     for s in Shelf.query.all():
-                            if s.name == key:
-                                   for si in s.shelf_items:
-                                          if si.allowed:
-                                                 new_items.append((0, si.item.name))
-                     print(f"MMM: {new_items}")
+              # chech if the delta factors into k number of knwon masses
+              sums = []
+              for s in Shelf.query.all():
+                     if s.name == key:
+                            for si in s.shelf_items:
+                                   if si.allowed:
+                                          count = 1
+                                          exp_val = si.item.per_unit_weight
+                                          while abs(abs(delta)-exp_val) > exp_val:
+                                                 exp_val += si.item.per_unit_weight
+                                                 count += 1
+                                          print(f"{exp_val} {count}")
+                                          if abs(int(delta)) in range(int(exp_val - (DataBuilder.MASS_FACTOR*count)), int(exp_val + (DataBuilder.MASS_FACTOR*count))):
+                                                 sums.append({"name": si.item.name, "val": si.count + (int(delta/abs(delta))*count)})
+              print(sums)
 
-              # else check if the delta factors into known weights
-              else: 
-                     new_items = self.anomaly_check(key, self.running_vals[key][0])
-                     print(f"AAA: {new_items}")
-                     if not new_items:
-                            return
-
-              
-
-              # read to db to find what the new total count must be 
-              for i in new_items:
-                     name = i[1] 
-                     update_values = {"count": i[0]}
-                     
-                     # add the new items to the db
+              # add the new items to the db
+              if len(sums) == 1:
+                     update_values = {"count": sums[0]["val"]}
                      with self.app.app_context():
                             shelf_id = db.session.execute(select(Shelf.id).where(Shelf.name == key)).scalar()
                             if shelf_id:     
-                                   exists_query = select(ShelfItem.id).where(ShelfItem.shelf_id == shelf_id, ShelfItem.item_name == name)
+                                   exists_query = select(ShelfItem.id).where(ShelfItem.shelf_id == shelf_id, ShelfItem.item_name == sums[0]["name"])
                                    shelf_item_id = db.session.execute(exists_query).scalar()
                                    if shelf_item_id:                                   
                                           update_stmt = (update(ShelfItem)
-                                                               .where(ShelfItem.shelf_id == shelf_id, ShelfItem.item_name == name)
+                                                               .where(ShelfItem.shelf_id == shelf_id, ShelfItem.item_name == sums[0]["name"])
                                                                .values(**update_values))
                                           db.session.execute(update_stmt)
                                           db.session.commit()
@@ -138,7 +105,7 @@ class DataBuilder(threading.Thread):
               # do anomaly_check before status update
               new_status = Status.ANOMALY
               if value is not Status.ANOMALY:
-                     if (self.anomaly_check(key, self.running_vals[key][0])) or (value is Status.OFFLINE):
+                     if (self.anomaly_check(key)) or (value is Status.OFFLINE):
                             print(f"STAT: {key} OLD: {oldVal} NEW: {value}")
                             new_status = value
               else:             
@@ -163,9 +130,7 @@ class DataBuilder(threading.Thread):
                      interval = "1 seconds"
                      if int(time.time()) % 10 == 0:
                             interval = "10 seconds"
-                            for key in self.running_vals:
-                                   self.handle_val_event(key, -1)
-
+              
                      # pull raw data from the db
                      stmt = text(f"""
                             SELECT *
