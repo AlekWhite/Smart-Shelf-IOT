@@ -3,6 +3,7 @@ from flask import Flask, request, session, render_template, abort, redirect, url
 from werkzeug.security import check_password_hash, generate_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf.csrf import CSRFProtect
 from sqlalchemy import select, update
 from flask import app as application
 from datetime import timedelta
@@ -29,8 +30,13 @@ app.config['SQLALCHEMY_DATABASE_URI'] = secrets.token_urlsafe(32)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=30)
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SECURE'] = True if os.getenv('FLASK_ENV') == 'production' else False
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+
 db.init_app(app)
 jwt = JWTManager(app)
+csrf = CSRFProtect(app)
 calVal = 0
 
 
@@ -44,6 +50,7 @@ def main_page():
 
 # login for the web-app clients 
 @app.route('/auth_page', methods=['GET', 'POST'])
+@csrf.exempt
 def auth_page():
     if request.method == 'GET':
         return render_template("authPage.html")
@@ -61,6 +68,7 @@ def auth_page():
 
 # manager page can edit shelf data in the db
 @app.route('/manager_page', methods=['GET', 'POST'])
+@csrf.exempt
 def manager_page():
     update_values = {}
     if 'user_id' not in session:
@@ -122,6 +130,7 @@ def manager_page():
 
 # login for data senders 
 @app.route('/api/auth', methods=['POST'])
+@csrf.exempt
 def auth():
     data = request.get_json()
     user = User.query.filter_by(username=data.get('username')).first()
@@ -171,10 +180,10 @@ def get_shelves():
         shelves_data.append(shelf_obj)
     return json.dumps({"shelves": shelves_data}), 200
 
-
 # put new data into the db
 @app.route('/api/postdata', methods=['POST'])
 @jwt_required()
+@csrf.exempt
 def update_dataset():
     global calVal
 

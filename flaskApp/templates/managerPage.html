@@ -14,33 +14,33 @@
         </button></form>
     </div>
 
+
     <div class="shelfDiv">
-        <p><b class="labelText">Shelf Unit #1:</b></p>
+        <p><b class="labelText">Shelf Unit #3:</b></p>
 
         <form action="/manager_page" method="post">
-            <input type="hidden" name="cal" value="1">
+            <input type="hidden" name="cal" value="3">
             <button class="mgButton" type="submit">Calibrate</button>
         </form>
 
-        <div class="itemsDiv" id="items_s1">
+        <div class="itemsDiv" id="items_s3">
             <span class="mainText">Items:</span>
-            <p id="s1Data" class="dataText">No-Data</p>
+            <p id="s3Data" class="dataText">No-Data</p>
         </div>
 
         <div class="itemsDiv">
             <form action="/manager_page" method="post">
                 <p class="labelText">Add New Item:
                     <label>
-                        <select class="textInp" id="newItemsS1" name="newItem" required>
+                        <select class="textInp" id="newItemsS3" name="newItem" required>
                             <option value="">-- Select an item --</option>
                         </select>
-                        <input type="hidden" name="newItemShelf" value="1">
-                        <button class="adButton" type="submit" >Add-Item</button>
+                        <input type="hidden" name="newItemShelf" value="3">
+                        <button class="adButton" type="submit">Add-Item</button>
                     </label>
                 </p>
             </form>
         </div>
-
     </div>
 
     <div class="shelfDiv">
@@ -70,35 +70,37 @@
             </form>
         </div>
 
-    </div>
-
-    <div class="shelfDiv">
-        <p><b class="labelText">Shelf Unit #3:</b></p>
-
-        <form action="/manager_page" method="post">
-            <input type="hidden" name="cal" value="3">
-            <button class="mgButton" type="submit">Calibrate</button>
-        </form>
-
-        <div class="itemsDiv" id="items_s3">
-            <span class="mainText">Items:</span>
-            <p id="s3Data" class="dataText">No-Data</p>
         </div>
 
-        <div class="itemsDiv">
+            <div class="shelfDiv">
+            <p><b class="labelText">Shelf Unit #1:</b></p>
+
             <form action="/manager_page" method="post">
-                <p class="labelText">Add New Item:
-                    <label>
-                        <select class="textInp" id="newItemsS3" name="newItem" required>
-                            <option value="">-- Select an item --</option>
-                        </select>
-                        <input type="hidden" name="newItemShelf" value="3">
-                        <button class="adButton" type="submit">Add-Item</button>
-                    </label>
-                </p>
+                <input type="hidden" name="cal" value="1">
+                <button class="mgButton" type="submit">Calibrate</button>
             </form>
+
+            <div class="itemsDiv" id="items_s1">
+                <span class="mainText">Items:</span>
+                <p id="s1Data" class="dataText">No-Data</p>
+            </div>
+
+            <div class="itemsDiv">
+                <form action="/manager_page" method="post">
+                    <p class="labelText">Add New Item:
+                        <label>
+                            <select class="textInp" id="newItemsS1" name="newItem" required>
+                                <option value="">-- Select an item --</option>
+                            </select>
+                            <input type="hidden" name="newItemShelf" value="1">
+                            <button class="adButton" type="submit" >Add-Item</button>
+                        </label>
+                    </p>
+                </form>
         </div>
 
     </div>
+
+
 
 </body>
